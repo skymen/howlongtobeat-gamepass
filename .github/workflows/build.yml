@@ -7,10 +7,10 @@ on:
 
 jobs:
   release:
-    fast-fail: false
     runs-on: ${{ matrix.os }}
 
     strategy:
+      fail-fast: false
       matrix:
         os: [macos-latest, ubuntu-latest, windows-latest]
 
