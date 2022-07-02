@@ -6,10 +6,14 @@ Vue.use(Vuex);
 export default new Vuex.Store({
   state: {
     GamePassGames: [],
+    totalGames: 0,
   },
   mutations: {
-    setGamePassData(state, payload) {
-      state.GamePassGames = payload;
+    addGame(state, payload) {
+      state.GamePassGames = [...state.GamePassGames, payload];
+    },
+    setTotalGames(state, payload) {
+      state.totalGames = payload;
     },
   },
   actions: {},

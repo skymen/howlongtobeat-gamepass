@@ -6,9 +6,17 @@ module.exports = {
       // Your main process file will be added by default
       // mainProcessWatch: ["src"],
       builderOptions: {
-        productName: "Game Pass Scraper",
+        productName: "How Long To Beat Game Pass",
+        extraResources: [
+          {
+            from: "./src/extraResources/",
+            to: "extraResources",
+            filter: ["**/*"],
+          },
+        ],
       },
       nodeIntegration: true,
     },
+    nodeIntegration: true,
   },
 };

@@ -1,8 +1,12 @@
-import { app, protocol, BrowserWindow } from "electron";
+import { app, protocol, BrowserWindow, contextBridge, ipcRenderer } from "electron";
 import { createProtocol } from "vue-cli-plugin-electron-builder/lib";
 import installExtension, { VUEJS_DEVTOOLS } from "electron-devtools-installer";
 
 const isDevelopment = process.env.NODE_ENV !== "production";
+let { fork } = require("child_process");
+const path = require("path");
+let findOpenSocket = require("./find-open-socket");
+let serverProcess;
 
 // Scheme must be registered before the app is ready
 protocol.registerSchemesAsPrivileged([
@@ -15,7 +19,7 @@ async function createWindow() {
     width: 1080,
     height: 720,
     autoHideMenuBar: true,
-    title: "Game pass scraper",
+    title: "How Long To Beat Game Pass",
     webPreferences: {
       // Use pluginOptions.nodeIntegration, leave this alone
       // See nklayman.github.io/vue-cli-plugin-electron-builder/guide/security.html#node-integration for more info
@@ -24,6 +28,7 @@ async function createWindow() {
       webSecurity: false,
     },
   });
+  console.log(process.env.ELECTRON_NODE_INTEGRATION);
   // win.webContents.session.webRequest.onBeforeSendHeaders((details, callback) => {
   //   callback({ requestHeaders: { Origin: "*", ...details.requestHeaders } });
   // });
@@ -75,8 +80,27 @@ app.on("ready", async () => {
       console.error("Vue Devtools failed to install:", e.toString());
     }
   }
+  let serverSocket = await findOpenSocket();
   createWindow();
+  createBackgroundProcess(serverSocket);
 });
+
+function createBackgroundProcess(socketName) {
+  let config = ["--subprocess", app.getVersion(), socketName];
+  if (isDevelopment) {
+    serverProcess = fork("./src/extraResources/server.js", config);
+  } else {
+    const serverPath = path.join(path.dirname(__dirname), "extraResources", "server.js");
+    // dialog.showMessageBoxSync({
+    //   message: serverPath
+    // })
+    serverProcess = fork(serverPath, config);
+  }
+
+  serverProcess.on("message", (msg) => {
+    console.log(msg);
+  });
+}
 
 // Exit cleanly on request from parent process in development mode.
 if (isDevelopment) {
