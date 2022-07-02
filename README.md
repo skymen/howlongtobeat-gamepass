@@ -1,4 +1,4 @@
-# gamepass-scraper
+# How Long To Beat Game Pass
 
 ## Project setup
 ```
