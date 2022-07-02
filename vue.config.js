@@ -6,6 +6,7 @@ module.exports = {
       // Your main process file will be added by default
       // mainProcessWatch: ["src"],
       builderOptions: {
+        appId: "io.skymen.howlongtobeatgamepass",
         productName: "How Long To Beat Game Pass",
         extraResources: [
           {
@@ -14,25 +15,18 @@ module.exports = {
             filter: ["**/*"],
           },
         ],
-        appId: "io.dedra.howlongtobeatgamepass",
-        files: ["dist/**/*.{js,css,html,ttf}"],
-        directories: {
-          buildResources: "./",
-        },
         mac: {
           category: "public.app-category.developer-tools",
-          artifactName: "${productName}-${version}-${os}-${arch}.${ext}",
-          hardenedRuntime: true,
-          entitlementsInherit: "build/entitlements.mac.inherit-plist",
+        },
+        dmg: {
+          icon: false,
         },
         linux: {
           target: "AppImage",
-          artifactName: "${productName}-${version}-${os}-${arch}.${ext}",
           category: "Development",
         },
         win: {
           target: "nsis",
-          artifactName: "${productName}-${version}-${os}-${arch}.${ext}",
         },
         publish: {
           provider: "github",
